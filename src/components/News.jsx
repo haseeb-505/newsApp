@@ -13,50 +13,52 @@ export class News extends Component {
       totalResults: 0,
     };
     this.apiKey = import.meta.env.VITE_NEWS_API_KEY;
-  };
+  }
 
-  async fetchNews(page){
+  async fetchNews(page) {
     try {
-        this.setState({ loading: true});
-        let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${page}&pageSize=${this.props.pageSize}`;
-        let data = await fetch(url);
-        let parsedData = await data.json();
-        if (parsedData.status === "error") {
-            throw new Error(parsedData.message || "Failed to fetch new articles.");
-        }
-        if (!parsedData.articles) {
-            toast.error("No articles found for this query.");
-        }
-        this.setState({
-            articles: parsedData.articles,
-            totalResults: parsedData.totalResults,
-            page: page,
-            loading: false,
-          });
+      this.setState({ loading: true });
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${page}&pageSize=${this.props.pageSize}`;
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      if (parsedData.status === "error") {
+        throw new Error(parsedData.message || "Failed to fetch new articles.");
+      }
+      if (!parsedData.articles) {
+        toast.error("No articles found for this query.");
+      }
+      this.setState({
+        articles: parsedData.articles,
+        totalResults: parsedData.totalResults,
+        page: page,
+        loading: false,
+      });
     } catch (error) {
-        toast.error(error.message);
+      toast.error(error.message);
       this.setState({
         error: error.message,
         loading: false,
-        articles: []
+        articles: [],
       });
     }
   }
 
   async componentDidMount() {
-   await this.fetchNews(this.state.page);
-    
+    await this.fetchNews(this.state.page);
   }
 
   handlePrevClick = async () => {
-   if (this.state.page > 1) {
-    await this.fetchNews(this.state.page -1);
-   }
+    if (this.state.page > 1) {
+      await this.fetchNews(this.state.page - 1);
+    }
   };
 
   handleNextClick = async () => {
-    if (this.state.page + 1 <= Math.ceil(this.state.totalResults / this.props.pageSize)) {
-        await this.fetchNews(this.state.page + 1)
+    if (
+      this.state.page + 1 <=
+      Math.ceil(this.state.totalResults / this.props.pageSize)
+    ) {
+      await this.fetchNews(this.state.page + 1);
     } else {
       toast.error("No more pages for this query");
     }
@@ -68,29 +70,33 @@ export class News extends Component {
         {this.state.loading && <Spinner />}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center sm:gap-6 p-4">
           {/* loop through the articles to show each of them in a card */}
-          {!this.state.loading && Array.isArray(this.state.articles) && this.state.articles.map((element, index) => {
-            return (
-              <div key={index}>
-                <NewsItem
-                  title={
-                    element.title ? element.title.slice(0, 30) + "..." : ""
-                  }
-                  description={
-                    element.description
-                      ? element.description.slice(0, 80) + "..."
-                      : ""
-                  }
-                  urlToImage={
-                    element.urlToImage
-                      ? element.urlToImage
-                      : "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0"
-                  }
-                  newsUrl={element.url}
-                  publishedAt={element.publishedAt}
-                />
-              </div>
-            );
-          })}
+          {!this.state.loading &&
+            Array.isArray(this.state.articles) &&
+            this.state.articles.map((element, index) => {
+              return (
+                <div key={index}>
+                  <NewsItem
+                    title={
+                      element.title ? element.title.slice(0, 30) + "..." : ""
+                    }
+                    description={
+                      element.description
+                        ? element.description.slice(0, 80) + "..."
+                        : ""
+                    }
+                    urlToImage={
+                      element.urlToImage
+                        ? element.urlToImage
+                        : "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0"
+                    }
+                    newsUrl={element.url}
+                    publishedAt={element.publishedAt}
+                    author={element.author}
+                    source={element.source.name}
+                  />
+                </div>
+              );
+            })}
         </div>
         {/* previous and next button */}
         <div className="flex justify-between">
@@ -116,7 +122,10 @@ export class News extends Component {
           </button>
           <span className="text-center font-bold">Page: {this.state.page}</span>
           <button
-            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)}
+            disabled={
+              this.state.page + 1 >
+              Math.ceil(this.state.totalResults / this.props.pageSize)
+            }
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
             onClick={this.handleNextClick}
