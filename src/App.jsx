@@ -12,13 +12,13 @@ export default class App extends Component {
         {/* In this app, we'll use React Class based components. */}
         <NavBar />
         <Routes>
-          <Route key={"/general"} path="/" element={<News pageSize={20} category={"general"}/>}/>
-          <Route key={"/business"} path="/business" element={<News pageSize={20} category={"business"}/>}/>
-          <Route key={"/entertainment"} path="/entertainment" element={<News pageSize={20} category={"entertainment"}/>}/>
-          <Route key={"/health"} path="/health" element={<News pageSize={20} category={"health"}/>}/>
-          <Route key={"/science"} path="/science" element={<News pageSize={20} category={"science"}/>}/>
-          <Route key={"/sports"} path="/sports" element={<News pageSize={20} category={"sports"}/>}/>
-          <Route key={"/technology"} path="/technology" element={<News pageSize={20} category={"technology"}/>}/>
+          <Route path="/" element={<News key={"/general"} pageSize={20} category={"general"}/>}/>
+          <Route path="/business" element={<News key={"/business"} pageSize={20} category={"business"}/>}/>
+          <Route path="/entertainment" element={<News key={"/entertainment"} pageSize={20} category={"entertainment"}/>}/>
+          <Route path="/health" element={<News key={"/health"} pageSize={20} category={"health"}/>}/>
+          <Route path="/science" element={<News key={"/science"} pageSize={20} category={"science"}/>}/>
+          <Route path="/sports" element={<News key={"/sports"} pageSize={20} category={"sports"}/>}/>
+          <Route path="/technology" element={<News key={"/technology"} pageSize={20} category={"technology"}/>}/>
         </Routes>
       </div>
     )
