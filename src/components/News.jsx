@@ -3,7 +3,6 @@ import NewsItem from "./NewsItem.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import Spinner from "./Spinner.jsx";
 
-
 export class News extends Component {
   constructor() {
     super();
@@ -12,10 +11,11 @@ export class News extends Component {
       loading: false,
       page: 1,
     };
+    this.apiKey = import.meta.env.VITE_NEWS_API_KEY;
   }
 
   async componentDidMount() {
-    let url = ` https://newsapi.org/v2/everything?q=cricket&apiKey=26b5f08e076e4756b97241995abf2378&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     // set loading to true before fetching the data
     this.setState({ loading: true})
     let data = await fetch(url);
@@ -29,7 +29,7 @@ export class News extends Component {
   }
 
   handlePrevClick = async () => {
-    let url = ` https://newsapi.org/v2/everything?q=cricket&apiKey=26b5f08e076e4756b97241995abf2378&page=${
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${
       this.state.page - 1
     }&pageSize=${this.props.pageSize}`;
     this.setState({loading: true});
@@ -45,10 +45,10 @@ export class News extends Component {
   };
 
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / 20)) {
+    if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)) {
         toast.info("No more pages for this query");
     } else {
-      let url = ` https://newsapi.org/v2/everything?q=cricket&apiKey=26b5f08e076e4756b97241995abf2378&page=${
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${
         this.state.page + 1
       }&pageSize=${this.props.pageSize}`;
       this.setState({ loading: true });
@@ -70,7 +70,7 @@ export class News extends Component {
         {this.state.loading && <Spinner />}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center sm:gap-6 p-4">
           {/* loop through the articles to show each of them in a card */}
-          {!this.state.loading && this.state.articles.map((element, index) => {
+          {!this.state.loading && Array.isArray(this.state.articles) && this.state.articles.map((element, index) => {
             return (
               <div key={index}>
                 <NewsItem
@@ -118,7 +118,7 @@ export class News extends Component {
           </button>
           <span className="text-center font-bold">Page: {this.state.page}</span>
           <button
-            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / 20)}
+            disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)}
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
             onClick={this.handleNextClick}
