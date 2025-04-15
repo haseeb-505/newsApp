@@ -10,57 +10,55 @@ export class News extends Component {
       articles: [],
       loading: false,
       page: 1,
+      totalResults: 0,
     };
     this.apiKey = import.meta.env.VITE_NEWS_API_KEY;
+  };
+
+  async fetchNews(page){
+    try {
+        this.setState({ loading: true});
+        let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${page}&pageSize=${this.props.pageSize}`;
+        let data = await fetch(url);
+        let parsedData = await data.json();
+        if (parsedData.status === "error") {
+            throw new Error(parsedData.message || "Failed to fetch new articles.");
+        }
+        if (!parsedData.articles) {
+            toast.error("No articles found for this query.");
+        }
+        this.setState({
+            articles: parsedData.articles,
+            totalResults: parsedData.totalResults,
+            page: page,
+            loading: false,
+          });
+    } catch (error) {
+        toast.error(error.message);
+      this.setState({
+        error: error.message,
+        loading: false,
+        articles: []
+      });
+    }
   }
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-    // set loading to true before fetching the data
-    this.setState({ loading: true})
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    // update the artcles state with the articles fetched from the API
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false,
-    });
+   await this.fetchNews(this.state.page);
+    
   }
 
   handlePrevClick = async () => {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${
-      this.state.page - 1
-    }&pageSize=${this.props.pageSize}`;
-    this.setState({loading: true});
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    // update the artcles state with the articles fetched from the API
-    this.setState({ articles: parsedData.articles });
-    this.setState({
-      page: this.state.page - 1,
-      articles: parsedData.articles,
-      loading: false,
-    });
+   if (this.state.page > 1) {
+    await this.fetchNews(this.state.page -1);
+   }
   };
 
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)) {
-        toast.info("No more pages for this query");
+    if (this.state.page + 1 <= Math.ceil(this.state.totalResults / this.props.pageSize)) {
+        await this.fetchNews(this.state.page + 1)
     } else {
-      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${
-        this.state.page + 1
-      }&pageSize=${this.props.pageSize}`;
-      this.setState({ loading: true });
-      let data = await fetch(url);
-      let parsedData = await data.json();
-      // update the artcles state with the articles fetched from the API
-      this.setState({ articles: parsedData.articles });
-      this.setState({
-        page: this.state.page + 1,
-        articles: parsedData.articles,
-        loading: false,
-      });
+      toast.error("No more pages for this query");
     }
   };
   render() {
