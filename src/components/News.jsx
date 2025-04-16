@@ -63,10 +63,15 @@ export class News extends Component {
       toast.error("No more pages for this query");
     }
   };
+
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   render() {
     return (
-      <div className="container mx-auto my-3">
-        <h1 className="text-center font-bold">NewsApp - Top Headlines</h1>
+      <div className="container mx-auto my-20">
+        <h1 className="text-center font-bold">NewsApp - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1>
         {this.state.loading && <Spinner />}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center sm:gap-6 p-4">
           {/* loop through the articles to show each of them in a card */}
