@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 
-export class NewsItem extends Component {
-  getTimeAgo = (publishedAt) => {
+const NewsItem = (props) => {
+  const getTimeAgo = (publishedAt) => {
     const now = new Date();
     const publisedDate = new Date(publishedAt);
     const diffMs = now - publisedDate;
@@ -31,16 +31,10 @@ export class NewsItem extends Component {
       };
     }
   };
-  render() {
-    let {
-      title,
-      description,
-      urlToImage,
-      newsUrl,
-      publishedAt,
-      author,
-      source,
-    } = this.props;
+
+  // destructuring the props here
+  let { title, description, urlToImage, newsUrl, publishedAt, author, source} = props;
+
     return (
       <div>
         <div className="card max-w-lg bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -60,11 +54,7 @@ export class NewsItem extends Component {
                 </h5>
               </a>
               <span
-                className={`text-xs font-bold px-1.5 py-1 rounded-sm border ${
-                  this.getTimeAgo(publishedAt).className
-                } dark:bg-gray-200`}
-              >
-                {this.getTimeAgo(publishedAt).label}
+                className={`text-xs font-bold px-1.5 py-1 rounded-sm border ${getTimeAgo(publishedAt).className} dark:bg-gray-200`}>{getTimeAgo(publishedAt).label}
               </span>
             </div>
             <p className="card-text mb-3 font-normal text-gray-700 dark:text-gray-400">
@@ -108,7 +98,6 @@ export class NewsItem extends Component {
         </div>
       </div>
     );
-  }
 }
 
 export default NewsItem;
