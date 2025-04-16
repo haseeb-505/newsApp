@@ -1,24 +1,21 @@
-import React, { Component } from "react";
+import React, {use, useEffect, useState} from "react";
 import NewsItem from "./NewsItem.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import Spinner from "./Spinner.jsx";
 
-export class News extends Component {
-  constructor() {
-    super();
-    this.state = {
-      articles: [],
-      loading: false,
-      page: 1,
-      totalResults: 0,
-    };
-    this.apiKey = import.meta.env.VITE_NEWS_API_KEY;
-  }
+const News = (props) => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
-  async fetchNews(page) {
+  const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+
+
+  const fetchNews= async (page) => {
     try {
-      this.setState({ loading: true });
-      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.apiKey}&page=${page}&pageSize=${this.props.pageSize}`;
+      setLoading(true);
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
       let data = await fetch(url);
       let parsedData = await data.json();
       if (parsedData.status === "error") {
@@ -27,57 +24,52 @@ export class News extends Component {
       if (!parsedData.articles) {
         toast.error("No articles found for this query.");
       }
-      this.setState({
-        articles: parsedData.articles,
-        totalResults: parsedData.totalResults,
-        page: page,
-        loading: false,
-      });
+      setArticles(parsedData.articles);
+      setTotalResults(parsedData.totalResults);
+      setPage(page);
+      setLoading(false);
     } catch (error) {
       toast.error(error.message);
-      this.setState({
-        error: error.message,
-        loading: false,
-        articles: [],
-      });
+      setLoading(false);
+      setArticles([]);
+      setTotalResults(0);
+      console.log(error.message);
     }
   }
 
-  async componentDidMount() {
-    await this.fetchNews(this.state.page);
-  }
+  useEffect(() => {
+    fetchNews(page);
+  }, [])
 
-  handlePrevClick = async () => {
-    if (this.state.page > 1) {
-      await this.fetchNews(this.state.page - 1);
+  const handlePrevClick = async () => {
+    if (page > 1) {
+      await fetchNews(page - 1);
+      setPage(page - 1);
     }
   };
 
-  handleNextClick = async () => {
-    if (
-      this.state.page + 1 <=
-      Math.ceil(this.state.totalResults / this.props.pageSize)
-    ) {
-      await this.fetchNews(this.state.page + 1);
+  const handleNextClick = async () => {
+    if (page + 1 <= Math.ceil(totalResults / props.pageSize)) {
+      await fetchNews(page + 1);
+      setPage(page + 1);
     } else {
       toast.error("No more pages for this query");
     }
   };
 
-  capitalizeFirstLetter = (string) => {
+  const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  render() {
     return (
       <div className="container mx-auto my-20">
-        <h1 className="text-center font-bold">NewsApp - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1>
-        {this.state.loading && <Spinner />}
+        <h1 className="text-center font-bold">NewsApp - Top {capitalizeFirstLetter(props.category)} Headlines</h1>
+        {loading && <Spinner />}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center sm:gap-6 p-4">
           {/* loop through the articles to show each of them in a card */}
-          {!this.state.loading &&
-            Array.isArray(this.state.articles) &&
-            this.state.articles.map((element, index) => {
+          {!loading &&
+            Array.isArray(articles) &&
+            articles.map((element, index) => {
               return (
                 <div key={index}>
                   <NewsItem
@@ -106,10 +98,10 @@ export class News extends Component {
         {/* previous and next button */}
         <div className="flex justify-between">
           <button
-            disabled={this.state.page <= 1}
+            disabled={page <= 1}
             type="button"
             className="text-white bg-blue-700 ml-5 disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={this.handlePrevClick}
+            onClick={handlePrevClick}
           >
             <kbd className="rtl:rotate-180 inline-flex items-center px-2 py-1.5">
               <svg
@@ -125,15 +117,12 @@ export class News extends Component {
             </kbd>
             Previous
           </button>
-          <span className="text-center font-bold">Page: {this.state.page}</span>
+          <span className="text-center font-bold">Page: {page}</span>
           <button
-            disabled={
-              this.state.page + 1 >
-              Math.ceil(this.state.totalResults / this.props.pageSize)
-            }
+            disabled={page + 1 >Math.ceil(totalResults / props.pageSize)}
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={this.handleNextClick}
+            onClick={handleNextClick}
           >
             Next
             <kbd className="rtl:rotate-180 inline-flex items-center px-2 py-1.5">
@@ -161,7 +150,6 @@ export class News extends Component {
         />
       </div>
     );
-  }
 }
 
 export default News;
