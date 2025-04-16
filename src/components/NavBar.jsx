@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 export class NavBar extends Component {
     constructor(){
@@ -59,28 +59,111 @@ export class NavBar extends Component {
                 <input type="text" id="search-navbar" className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..."/>
             </div>
             <ul className="flex flex-col p-3 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:text-sm md:space-x-2 lg:space-x-5 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                <li>
-                <Link to="/" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" >General</Link>
-                </li>
-                <li>
-                    <Link to="/business" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" >Business</Link>
-                </li>
-                <li>
-                    <Link to="/entertainment" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Entertainment</Link>
-                </li>
-                <li>
-                    <Link to="/health" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Health</Link>
-                </li>
-                <li>
-                    <Link to="/science" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Science</Link>
-                </li>
-                <li>
-                    <Link to="/sports" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sports</Link>
-                </li>
-                <li>
-                    <Link to="/technology" onClick={this.closeMenu} className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Technology</Link>
-                </li>
-                
+              <li>
+                <NavLink
+                  to="/"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  General
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/business"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Business
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/entertainment"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Entertainment
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/health"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Health
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/science"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Science
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/sports"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Sports
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/technology"
+                  onClick={this.closeMenu}
+                  className={({ isActive }) =>
+                    `block py-2 px-3 rounded-sm md:p-0 ${
+                      isActive
+                        ? "text-blue-700 md:text-blue-700 dark:text-blue-400"
+                        : "text-gray-900 dark:text-white"
+                    } hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent`
+                  }
+                >
+                  Technology
+                </NavLink>
+              </li>
             </ul>
             </div>
         </div>
