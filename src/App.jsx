@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import NavBar from './components/NavBar'
 import News from './components/News'
 import { Routes, Route } from 'react-router-dom'
-const newsApiKey = import.meta.env.VITE_NEWS_API_KEY;
-
+import SearchResults from './components/SearchResults';
+import { SearchProvider } from './components/SearchContext.jsx';
 
 export default class App extends Component {
   pageSize = 20;
   render() {
     return (
-      <div>
+      <SearchProvider>
         {/* In this app, we'll use React Class based components. */}
         <NavBar />
         <Routes>
@@ -20,9 +20,10 @@ export default class App extends Component {
           <Route path="/science" element={<News key={"/science"} pageSize={this.pageSize} category={"science"}/>}/>
           <Route path="/sports" element={<News key={"/sports"} pageSize={this.pageSize} category={"sports"}/>}/>
           <Route path="/technology" element={<News key={"/technology"} pageSize={this.pageSize} category={"technology"}/>}/>
-          
+          {/* we are not adding categor in search results yet. will see this later on */}
+          <Route path="/search" element={<SearchResults key="/search" pageSize={this.pageSize} />} />
         </Routes>
-      </div>
+      </SearchProvider>
     )
   }
 }

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { SearchContext } from "./SearchContext";
+import { withNavigate } from "./WithNavigate";
 
 export class NavBar extends Component {
   constructor() {
@@ -9,8 +11,11 @@ export class NavBar extends Component {
       searchValue: "",
       isSearchOpen: false,
     };
+    this.apiKey = import.meta.env.VITE_NEWS_API_KEY;
   }
-
+  // navigate = useNavigate();
+  static contextType = SearchContext;
+  // we are using context API to manage the state of the search value
   toggleMenu = () => {
     this.setState({ isMenuOpen: !this.state.isMenuOpen });
   };
@@ -28,8 +33,27 @@ export class NavBar extends Component {
     this.setState({ searchValue: event.target.value });
   };
 
-  submitSearch = () => {
+  // for search results, we'll create a separate component called SearchResults.jsx.
+  // we push the search value to the url and then do the searching
+  // create a route for the search results in app.jsx
+
+  handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.handleSearchSubmit();
+    }
+  };
+
+  handleSearchSubmit = () => {
     console.log(this.state.searchValue);
+    const searchValue = this.state.searchValue.trim();
+    if (searchValue === "" || searchValue.length < 3) {
+      alert("Please enter a search term longer than 2 alphabets.");
+      return;
+    } else {
+      this.context.setSearchValue(searchValue);
+      this.props.navigate(`/search?q=${encodeURIComponent(searchValue)}`);
+    };
     // close the search button if it is open
     // empty the search input field
     this.setState({
@@ -86,19 +110,20 @@ export class NavBar extends Component {
                       type="text"
                       value={this.state.searchValue}
                       onChange={this.handleSearchChange}
+                      onKeyDown={this.handleKeyPress}
                       className="w-36 md:w-40 bg-gray-200 border border-gray-400 rounded-md px-2 py-1 text-medium text-black"
                       placeholder="Search..."
                     />
                     <button
                       type="button"
-                      onClick={this.submitSearch}
+                      onClick={this.handleSearchSubmit}
                       className="bg-blue-600 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-500"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="currentColor"
-                        className="w-4 h-4"
+                        className="w-4 h-5"
                       >
                         <path
                           fillRule="evenodd"
@@ -276,4 +301,4 @@ export class NavBar extends Component {
   }
 }
 
-export default NavBar;
+export default withNavigate(NavBar);
