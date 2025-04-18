@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { SearchContext } from "../context/SearchContext.jsx";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const { setSearchTerm } = useContext(SearchContext)
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -34,6 +37,21 @@ const NavBar = () => {
     if (e.key === "Enter") {
       console.log("Search for:", searchValue);
       setIsSearchOpen(false);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    const trimmedSearch = searchValue.trim();
+    console.log("Search for:", trimmedSearch);
+    if (trimmedSearch.length < 3) {
+      alert("Please enter at least 3 characters to search.");
+    } else {
+      setSearchTerm(trimmedSearch);
+      // navigate to search results page
+      navigate('/search');
+      setIsSearchOpen(false);
+      setSearchValue("");
+      setIsMenuOpen(false);
     }
   };
 
@@ -189,7 +207,7 @@ const NavBar = () => {
                 </div>
               </div>
               <button 
-                onClick={() => console.log("Search for:", searchValue)}
+                onClick={handleSearchSubmit}
                 className="ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               >
                 Search
@@ -281,10 +299,7 @@ const NavBar = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => {
-                    console.log("Search for:", searchValue);
-                    setIsSearchOpen(false);
-                  }}
+                  onClick={handleSearchSubmit}
                   className="ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                   Search

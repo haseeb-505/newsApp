@@ -14,7 +14,7 @@ const News = (props) => {
   const fetchNews = async (page) => {
     try {
       setLoading(true);
-      // let url = `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
       let data = await fetch(url);
       let parsedData = await data.json();
       if (parsedData.status === "error") {
